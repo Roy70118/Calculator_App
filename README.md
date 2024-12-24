@@ -1,4 +1,4 @@
-Calculator App
+Calcultor_app
 
 A simple and interactive calculator web application built with Django and HTML/CSS/JavaScript. This app allows users to perform basic arithmetic operations such as addition, subtraction, multiplication, and division.
 Features
