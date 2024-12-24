@@ -1,0 +1,178 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+     <meta charset="UTF-8">
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <link rel="icon" href="{% static 'favicon.ico' %}" type="image/x-icon">
+
+     <title>Calculator</title>
+     <style>
+          body {
+               display: flex;
+               justify-content: center;
+               align-items: center;
+               height: 100vh;
+               background-color: #f0f0f0;
+               margin: 0;
+          }
+
+          .calculator {
+               border: 1px solid #ccc;
+               border-radius: 10px;
+               padding: 20px;
+               background-color: #fff;
+               box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+          }
+
+          .display {
+               width: 100%;
+               height: 50px;
+               background-color: #222;
+               color: #fff;
+               text-align: right;
+               padding: 10px;
+               font-size: 2em;
+               border-radius: 5px;
+               margin-bottom: 10px;
+          }
+
+          .buttons {
+               display: grid;
+               grid-template-columns: repeat(4, 1fr);
+               gap: 10px;
+          }
+
+          .button {
+               padding: 20px;
+               font-size: 1.5em;
+               border: none;
+               border-radius: 5px;
+               background-color: #f0f0f0;
+               cursor: pointer;
+               transition: background-color 0.2s, transform 0.1s ease;
+          }
+
+          .button.operator {
+               background-color: #ff9500;
+               color: #fff;
+          }
+
+          .button.zero {
+               grid-column: span 2;
+          }
+
+          .button.clear {
+               background-color: #f44336;
+               color: white;
+          }
+
+          /* Active button effect */
+          .button:active {
+               transform: scale(0.95);
+               background-color: #ddd;
+          }
+
+          .button.operator:active {
+               background-color: #e67e00;
+          }
+
+          .button.clear:active {
+               background-color: #e53935;
+          }
+
+          /* Operators styled like number buttons when clicked */
+          .button.operator.active {
+               background-color: #f0f0f0;
+               color: #000;
+          }
+     </style>
+</head>
+
+<body>
+     <div class="calculator">
+          <div class="display" id="display">0</div>
+          <div class="buttons">
+               <button class="button">7</button>
+               <button class="button">8</button>
+               <button class="button">9</button>
+               <button class="button operator">/</button>
+               <button class="button">4</button>
+               <button class="button">5</button>
+               <button class="button">6</button>
+               <button class="button operator">*</button>
+               <button class="button">1</button>
+               <button class="button">2</button>
+               <button class="button">3</button>
+               <button class="button operator">-</button>
+               <button class="button zero">0</button>
+               <button class="button">.</button>
+               <button class="button operator">+</button>
+               <button class="button operator">=</button>
+               <button class="button clear">C</button> <!-- Clear button -->
+          </div>
+     </div>
+</body>
+
+<script>
+     const display = document.getElementById('display');
+     const buttons = document.querySelectorAll('.button');
+     let currentInput = '';
+     let previousInput = '';
+     let operator = '';
+
+     // Event listeners for each button
+     buttons.forEach(button => {
+          button.addEventListener('click', () => {
+               const value = button.textContent;
+
+               // Add the active class when clicked
+               button.classList.add('active');
+
+               // Remove the active class after a short delay
+               setTimeout(() => {
+                    button.classList.remove('active');
+               }, 100);
+
+               if (button.classList.contains('operator')) {
+                    // Handling operator buttons (+, -, *, /, =)
+                    if (value === '=') {
+                         if (previousInput && operator && currentInput) {
+                              currentInput = eval(`${previousInput} ${operator} ${currentInput}`);
+                              display.textContent = currentInput;
+                              operator = '';
+                              previousInput = '';
+                         }
+                    } else {
+                         // Display operator like a number on the screen
+                         if (currentInput === '') return;  // Prevent setting an operator with empty input
+                         if (previousInput !== '') {
+                              currentInput = `${previousInput}`;
+                         }
+                         operator = value;
+                         previousInput = currentInput;
+                         currentInput = '';
+                         display.textContent = `${previousInput} ${operator}`;
+                    }
+               } else if (button.classList.contains('clear')) {
+                    // Clear button logic
+                    currentInput = '';
+                    previousInput = '';
+                    operator = '';
+                    display.textContent = '0'; // Reset display to 0
+               } else {
+                    // Handling number buttons
+                    if (currentInput === '0') {
+                         currentInput = value;
+                    } else {
+                         currentInput += value;
+                    }
+                    display.textContent = currentInput;
+               }
+          });
+     });
+</script>
+
+</html>
